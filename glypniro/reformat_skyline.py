@@ -5,8 +5,8 @@ import click
 
 glycan_column = "Glycans\nNHFAGNa"
 peptide_column = "Peptide\n< ProteinMetrics Confidential >"
-scan_number_regex = re.compile("id=(\d+)")
-replicate_regex = re.compile("(\w+)(\d+)$")
+scan_number_regex = re.compile(r"id=(\d+)")
+replicate_regex = re.compile(r"(\w+)(\d+)$")
 
 
 @click.command()

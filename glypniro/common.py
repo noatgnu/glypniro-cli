@@ -680,7 +680,7 @@ class GlypnirO:
 
                 for index, g in data.groupby([protein_id_column]):
 
-                    u = index
+                    u = index[0]
                     if not u.startswith(">Reverse") and not u.endswith("(Common contaminant protein)"):
                         # merging of byonic and pd data for appropriate protein
                         comp = GlypnirOComponent(g, file_with_area, r["replicate_id"],
