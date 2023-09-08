@@ -4,7 +4,7 @@ A automated script for processing and combining Byonic and PD standard output.
 
 # Requirements
 
-Pythons 3.4+ with the following packages installed.
+Pythons 3.9+ with the following packages installed.
 - pandas
 - sequal
 - uniprotparser
@@ -12,6 +12,11 @@ Pythons 3.4+ with the following packages installed.
 - xlrd
 - openpyxl
 - scipy
+
+# Installation
+
+The script can be installed using the following command.
+`pip install glypniro`
 
 # Usage
 
@@ -63,13 +68,13 @@ The output of the script is a single .xlsx file with 4 sheets.
 
 # Example
 
-`python main.py -i test_experiment.xlsx -o test_output.xlsx -t -g`
+`glypniro -i test_experiment.xlsx -o test_output.xlsx -t -g`
 
 The above command would instruct the script to use the `test_experiment.xlsx` file as input file and output as `test_output.xlsx`. 
 Inclusion of `-t` would mean that we trust Byonic assignment of glycan position and shall use them for calculation of that specific glycoform AUC within the proteins.
 Inclusion of `-g` would instruct the script to connect to the UniProt online database and attempt to parse protein name from the UniProt accession id contain in the protein name within the Byonic file.
 
-`python main.py -i test_experiment.xlsx -o test_output.xlsx`
+`glyniro -i test_experiment.xlsx -o test_output.xlsx`
 
 The above command would instruct the script to use the `test_experiment.xlsx` file as input file and output as `test_output.xlsx`.
 Without `-t` optional parameter, we only use the information of what glycans were found but not assigning them any positions. The AUC will only be combined for those PSMs with the same peptide sequence and glycan combination.
