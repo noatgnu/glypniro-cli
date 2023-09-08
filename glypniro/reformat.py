@@ -6,10 +6,12 @@ import click
 
 
 @click.command()
-@click.option("-b", "-byonic", type=click.Path(exists=True), help="Filepath to Byonic output xlsx file.")
-@click.option("-p", "-peakview", type=click.Path(exists=True), help="Filepath to PeakView peptide output in xlsx format")
-@click.option("-o", "-output", type=click.Path(exists=False), help="Filepath to output")
+@click.option("-b", "--byonic", type=click.Path(exists=True), help="Filepath to Byonic output xlsx file.")
+@click.option("-p", "--peakview", type=click.Path(exists=True), help="Filepath to PeakView peptide output in xlsx format")
+@click.option("-o", "--output", type=click.Path(exists=False), help="Filepath to output")
 def main(b, p, o):
+    output = pathlib.Path(o).absolute()
+    parent = output.parent
     pathlib.Path(o).mkdir(parents=True, exist_ok=True)
     byonic = pd.read_excel(b, sheet_name="Spectra")
     peakview = pd.read_excel(p)
@@ -34,9 +36,9 @@ def main(b, p, o):
         area = []
         byonic_glycan = []
         condition, replicate = c.rsplit("_", 1)
-        filepath = str(pathlib.Path(o).joinpath(c))
-        byonic = str(pathlib.Path(o).joinpath(c + ".xlsx"))
-        pd_file = str(pathlib.Path(o).joinpath(c + ".txt"))
+
+        byonic = str(parent.joinpath(c + ".xlsx"))
+        pd_file = str(parent.joinpath(c + ".txt"))
         description.append([condition, replicate, byonic, pd_file])
         columns = list(peakview.columns[:5]) + [c]
         df_result = peakview[columns]
@@ -124,6 +126,6 @@ def main(b, p, o):
         area_df = pd.DataFrame(area, columns=["First Scan", "Area"])
         area_df.to_csv(pd_file, sep="\t", index=False)
     description = pd.DataFrame(description, columns=["condition_id", "replicate_id", "filename", "area_filename"])
-    with pd.ExcelWriter(o) as writer:
+    with pd.ExcelWriter(output) as writer:
         description.to_excel(writer, index=False)
 

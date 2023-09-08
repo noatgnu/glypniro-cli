@@ -278,6 +278,7 @@ class GlypnirOComponent:
         for k in kwargs:
             if k in self.__dict__:
                 setattr(self, k, kwargs[k])
+        print(self.__dict__)
         for i, r in self.data.iterrows():
             glycan_dict = {}
             if mode == 1:
@@ -850,7 +851,7 @@ class GlypnirO:
             self.uniprot_parsed_data = self.uniprot_parsed_data.groupby(["Entry"]).head(1).reset_index().drop(["index"], axis=1)
 
         result_data = result_data.merge(self.uniprot_parsed_data, left_on="Protein", right_on="Entry")
-        result_data.drop("Entry", 1, inplace=True)
+        result_data.drop("Entry", axis=1, inplace=True)
 
         if self.trust_byonic:
             groups = result_data.groupby(by=["Protein", "Protein names",

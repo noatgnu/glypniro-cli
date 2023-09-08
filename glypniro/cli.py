@@ -14,12 +14,13 @@ import click
 @click.option("--parse-uniprot", "-p", help="Attempt to parse UniProt ID from protein name", is_flag=True)
 @click.option("--debug", "-d", help="In conjunction to the final output, the script would also create debug files that contain the "
                          "unique PSM selected for calculation of the data in the final output", is_flag=True)
-@click.option("--mode", "-m", help="Select the mode of operation. 0: Byonic only, 1: PD only, 2: Byonic and PD", type=int, default=2)
+@click.option("--mode", "-m", help="Select the mode of operation. 0: Byonic only, 1: PD only, 2: Byonic and PD", type=int, default=1)
 @click.option("--custom-group", "-c", help="A tabulated text file with two columns, Glycans and Labels. Glycans must be the glycans appear in the result and labels is the custome label for them", type=click.Path(exists=True))
 def main(input_file, output, score_cutoff, trust_byonic, get_uniprot, parse_uniprot, debug, mode, custom_group):
     """
     Automated workflow for processing and combining Byonic and PD output
     """
+    print(input_file, output, score_cutoff, trust_byonic, get_uniprot, parse_uniprot, debug, mode, custom_group)
     ex = GlypnirO(trust_byonic=trust_byonic, get_uniprot=get_uniprot, debug=debug,
                   parse_uniprot=parse_uniprot)
     if mode == 1:
@@ -91,7 +92,12 @@ def main(input_file, output, score_cutoff, trust_byonic, get_uniprot, parse_unip
                     df = pd.DataFrame(ex.unique_dict[u])
                     df.to_excel(writer, index=False)
     elif mode == 2:
-        data = pd.read_csv(input_file, sep="\t", encoding="utf-8")
+        if input_file.endswith(".txt") or input_file.endswith(".tsv"):
+            data = pd.read_csv(input_file, sep="\t", encoding="utf-8")
+        elif input_file.endswith(".csv"):
+            data = pd.read_csv(input_file, encoding="utf-8")
+        elif input_file.endswith(".xlsx"):
+            data = pd.read_excel(input_file)
         data, sample_info = process_tmt_pd_byonic(data)
 
         ex.uniprot_parsed_data = data[["Master Protein Accessions", "Protein Descriptions"]].rename(

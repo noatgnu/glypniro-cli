@@ -10,9 +10,9 @@ replicate_regex = re.compile(r"(\w+)(\d+)$")
 
 
 @click.command()
-@click.option("-b", "-byonic", type=click.Path(exists=True), help="Filepath to Byonic output xlsx file.")
-@click.option("-s", "-skyline", type=click.Path(exists=True), help="Filepath to Skyline peptide output in xlsx format")
-@click.option("-o", "-output", type=click.Path(exists=False), help="Filepath to output folder")
+@click.option("-b", type=click.Path(exists=True), help="Filepath to Byonic output xlsx file.")
+@click.option("-s", type=click.Path(exists=True), help="Filepath to Skyline peptide output in xlsx format")
+@click.option("-o", type=click.Path(), help="Filepath to output folder")
 def main(b, s, o):
     work = []
     df = pd.read_csv(s)
@@ -21,8 +21,10 @@ def main(b, s, o):
     df[peptide_column] = split_data[0]
     df[glycan_column] = split_data[1]
     df["z"] = split_data[2]
+    print(df["Glycans\nNHFAGNa"])
     byonic.drop([glycan_column, "z"], axis=1, inplace=True)
     df = df.merge(byonic, on=peptide_column)
+
     current_condition = ""
     current_replicate = ""
     # df["Replicate"] = df["Replicate"].astype(str)
@@ -33,6 +35,7 @@ def main(b, s, o):
     df["Area"] = df["Normalized Area"]
     output_folder = o
     pathlib.Path(output_folder).mkdir(parents=True, exist_ok=True)
+
     for g, d in df.groupby(["Condition id", "Replicate id"]):
         pd_file = str(pathlib.Path(output_folder).joinpath("_".join(g) + ".txt"))
         byonic_file = str(pathlib.Path(output_folder).joinpath("_".join(g) + ".xlsx"))
@@ -44,9 +47,14 @@ def main(b, s, o):
         with pd.ExcelWriter(byonic_file) as writer:
             d["Scan #"] = pd.Series(scan_byonic, index=d.index)
             d["First Scan"] = pd.Series(scan_pd, index=d.index)
-            d[["Protein Name", "Glycans\nNHFAGNa", "Peptide\n< ProteinMetrics Confidential >", "Score", "Scan #",
-               "Starting\nposition", "Calc.\nmass (M+H)"]].to_excel(writer, sheet_name="Spectra", index=False)
-            d[["First Scan", "Area"]].to_csv(pd_file, sep="\t", index=False)
+
+            new_df = d[["Protein Name", "Glycans\nNHFAGNa", "Peptide\n< ProteinMetrics Confidential >", "Score", "Scan #",
+               "Starting\nposition", "Calc.\nmass (M+H)"]]
+            new_df.to_excel(writer, sheet_name="Spectra", index=False)
+
+            new_df = d[["First Scan", "Area"]]
+            new_df.to_csv(pd_file, sep="\t", index=False)
+
             work.append([g[0], g[1], byonic_file, pd_file])
 
     work = pd.DataFrame(work, columns=["condition_id", "replicate_id", "filename", "area_filename"])
