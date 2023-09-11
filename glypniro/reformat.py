@@ -9,12 +9,13 @@ import click
 @click.option("-b", "--byonic", type=click.Path(exists=True), help="Filepath to Byonic output xlsx file.")
 @click.option("-p", "--peakview", type=click.Path(exists=True), help="Filepath to PeakView peptide output in xlsx format")
 @click.option("-o", "--output", type=click.Path(exists=False), help="Filepath to output")
-def main(b, p, o):
-    output = pathlib.Path(o).absolute()
+def main(byonic:str, peakview:str, output:str):
+    print(byonic, peakview, output)
+    output = pathlib.Path(output).absolute()
     parent = output.parent
-    pathlib.Path(o).mkdir(parents=True, exist_ok=True)
-    byonic = pd.read_excel(b, sheet_name="Spectra")
-    peakview = pd.read_excel(p)
+    pathlib.Path(parent).mkdir(parents=True, exist_ok=True)
+    byonic = pd.read_excel(byonic, sheet_name="Spectra")
+    peakview = pd.read_excel(peakview)
     result = []
     for i, _ in byonic.groupby(
             ["Peptide\n< ProteinMetrics Confidential >", "Glycans\nNHFAGNa", "Protein Name", "Starting\nposition",

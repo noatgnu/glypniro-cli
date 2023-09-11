@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "glypniro"
-version = "0.1.6"
+version = "0.1.7"
 description = "A automated script for processing and combining Byonic and PD standard output."
 authors = ["Toan Phung <toan.phungkhoiquoctoan@gmail.com>"]
 readme = "README.md"
