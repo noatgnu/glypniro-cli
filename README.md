@@ -20,7 +20,7 @@ The script can be installed using the following command.
 
 # Usage
 
-The program can be run from the location of the script using the command `glyniro`. The following parameters can be used for operating the script within the commandline.
+The program can be run from the location of the script using the command `glypniro`. The following parameters can be used for operating the script within the commandline.
 
 |              Paremeters |                                                                                                                                                                  Descriptions |
 |------------------------:|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------:|
@@ -74,7 +74,7 @@ The above command would instruct the script to use the `test_experiment.xlsx` fi
 Inclusion of `-t` would mean that we trust Byonic assignment of glycan position and shall use them for calculation of that specific glycoform AUC within the proteins.
 Inclusion of `-g` would instruct the script to connect to the UniProt online database and attempt to parse protein name from the UniProt accession id contain in the protein name within the Byonic file.
 
-`glyniro -i test_experiment.xlsx -o test_output.xlsx`
+`glypniro -i test_experiment.xlsx -o test_output.xlsx`
 
 The above command would instruct the script to use the `test_experiment.xlsx` file as input file and output as `test_output.xlsx`.
 Without `-t` optional parameter, we only use the information of what glycans were found but not assigning them any positions. The AUC will only be combined for those PSMs with the same peptide sequence and glycan combination.
@@ -87,6 +87,8 @@ The command `glypniro-reformat` should be used to generate appropriate input for
 
 The command above will generate input files from experiment information and peptides information from GlypNirO and SWATH and create a description file that can be directly input into the main GlypNirO script.
 For optimal result, the SWATH library used for the PeakView should be constructed from Byonic identification data.
+
+After that, the `glypniro` command can be used to process the data with the additional argument `-s 0` to instruct the script to ignore the Byonic score cutoff since the combining process does not parse Byonic score and only substitute with value 1.
 
 # Note for using with Skyline data
 

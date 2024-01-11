@@ -1,6 +1,10 @@
 [tool.poetry]
 name = "glypniro"
+<<<<<<< Updated upstream
 version = "0.1.7"
+=======
+version = "0.1.8"
+>>>>>>> Stashed changes
 description = "A automated script for processing and combining Byonic and PD standard output."
 authors = ["Toan Phung <toan.phungkhoiquoctoan@gmail.com>"]
 readme = "README.md"

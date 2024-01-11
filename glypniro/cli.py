@@ -150,7 +150,7 @@ def main(input_file, output, score_cutoff, trust_byonic, get_uniprot, parse_unip
         result_glycoform = ex._summary_format(output_without_u, relabeling=custom_group)
         tempdf_index_reset_result_occupancy_with_u = result_occupancy_with_u.reset_index()
         tempdf_index_reset_result_glycoform = result_glycoform.reset_index()
-        print(tempdf_index_reset_result_glycoform)
+
 
         result_occupancy_glycoform_sep = pd.concat(
             [tempdf_index_reset_result_glycoform, tempdf_index_reset_result_occupancy_with_u])

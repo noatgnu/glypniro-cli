@@ -6,6 +6,7 @@ import click
 
 
 @click.command()
+<<<<<<< Updated upstream
 @click.option("-b", "--byonic", type=click.Path(exists=True), help="Filepath to Byonic output xlsx file.")
 @click.option("-p", "--peakview", type=click.Path(exists=True), help="Filepath to PeakView peptide output in xlsx format")
 @click.option("-o", "--output", type=click.Path(exists=False), help="Filepath to output")
@@ -16,6 +17,20 @@ def main(byonic:str, peakview:str, output:str):
     pathlib.Path(parent).mkdir(parents=True, exist_ok=True)
     byonic = pd.read_excel(byonic, sheet_name="Spectra")
     peakview = pd.read_excel(peakview)
+=======
+@click.option("-b", type=click.Path(exists=True), help="Filepath to Byonic output xlsx file.")
+@click.option("-p", type=click.Path(exists=True), help="Filepath to PeakView peptide output in xlsx format")
+@click.option("-o", type=click.Path(exists=False), help="Filepath to output")
+def main(b, p, o):
+    output = pathlib.Path(o).absolute()
+    parent = output.parent
+    pathlib.Path(parent).mkdir(parents=True, exist_ok=True)
+    try:
+        byonic = pd.read_excel(b, sheet_name="Spectra")
+    except ValueError:
+        byonic = pd.read_excel(b)
+    peakview = pd.read_excel(p)
+>>>>>>> Stashed changes
     result = []
     for i, _ in byonic.groupby(
             ["Peptide\n< ProteinMetrics Confidential >", "Glycans\nNHFAGNa", "Protein Name", "Starting\nposition",

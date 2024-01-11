@@ -209,13 +209,13 @@ class GlypnirOComponent:
                 # Joining of area and glycan data for each PSM using scan number as merging point
                 data["Scan number"] = pd.to_numeric(data["Scan #"].str.extract("id=(\d+)", expand=False))
                 data = pd.merge(data, file_with_area, left_on="Scan number", right_on="First Scan")
-
                 # Subset and filtering data for those with non blank area value and passing minimum score cutoff
                 self.protein_name = protein_name
                 self.data = data.sort_values(by=['Area'], ascending=False)
                 self.replicate_id = replicate_id
                 self.condition_id = condition_id
                 self.data = data[data["Area"].notnull()]
+
                 self.data = self.data[(self.data["Score"] >= minimum_score) &
                                       ((self.data[protein_column].str.contains(protein_name, regex=False)) | (self.data[protein_column].str.startswith(protein_name)))
                                  # (data["Protein Name"] == ">"+protein_name) &
@@ -224,7 +224,9 @@ class GlypnirOComponent:
                 self.data = self.data[~self.data[protein_column].str.contains(">Reverse")]
         elif mode == 2:
             self.data, self.tmt_sample_info = self.process_tmt_pd_byonic(data)
+
         if len(self.data.index) > 0:
+
             self.empty = False
         else:
             self.empty = True
@@ -628,6 +630,7 @@ class GlypnirO:
     def add_batch_component(self, component_list, minimum_score, protein=None, combine_uniprot_isoform=True, legacy=False, protein_column=protein_column_name, starting_position_column=starting_position_column_name):
         self.load_dataframe(component_list)
         protein_list = []
+
         if protein is not None:
             self.components["Protein"] = pd.Series([protein]*len(self.components.index), index=self.components.index)
             for i, r in self.components.iterrows():
@@ -687,6 +690,7 @@ class GlypnirO:
                         comp = GlypnirOComponent(g, file_with_area, r["replicate_id"],
                                                  condition_id=r["condition_id"], protein_name=u,
                                                  minimum_score=minimum_score, trust_byonic=self.trust_byonic, legacy=legacy)
+
                         if not comp.empty:
 
                             components.append({"filename": r["filename"], "area_filename": r["area_filename"], "condition_id": r["condition_id"], "replicate_id": r["replicate_id"], "Protein": u, "component": comp})
@@ -695,6 +699,7 @@ class GlypnirO:
                     "{} - {} peptides has been successfully loaded".format(r["condition_id"],
                                                                                       r["replicate_id"]))
             self.components = pd.DataFrame(components, columns=list(self.components.columns) + ["component", "Protein"])
+
             if not self.get_uniprot:
                 protein_df = pd.DataFrame(protein_list, columns=["Entry", "Protein names"])
                 self.uniprot_parsed_data = protein_df
@@ -735,7 +740,6 @@ class GlypnirO:
             unique_name = str(r["condition_id"]) + str(r["replicate_id"])
             if unique_name not in self.unique_dict:
                 self.unique_dict[unique_name] = []
-
             analysis_result = r["component"].analyze(debug=self.debug)
             #print(analysis_result.df)
             self.format_result(analysis_result, r, result, result_occupancy_no_calculation_u, result_without_u,
@@ -825,7 +829,7 @@ class GlypnirO:
 
     # summarize the data and collect uniprot protein directly fromt the online uniprot database if get_uniprot is True
     def _summary_format(self, result, filter_method=filter_U_only, select_for_u=False, relabeling=""):
-        #print(result)
+
         result_data = pd.concat(result)
         result_data = result_data.reset_index(drop=True)
         accessions = result_data["Protein"].unique()
